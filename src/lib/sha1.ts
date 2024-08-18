@@ -21,6 +21,9 @@ interface State {
 let _padding = '';
 let _initialized = false;
 
+/**
+ * SHA-1 algorithm creator.
+ */
 export const sha1: HashAlgorithmCreator = {
     /**
      * Creates a SHA-1 message digest object.

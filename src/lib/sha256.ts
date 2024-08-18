@@ -29,6 +29,9 @@ let _initialized = false;
 // table of constants
 let _k: number[];
 
+/**
+ * SHA-256 algorithm creator.
+ */
 export const sha256: HashAlgorithmCreator = {
     /**
    * Creates a SHA-256 message digest object.

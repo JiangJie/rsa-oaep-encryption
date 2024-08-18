@@ -32,14 +32,18 @@ let _k: NumberPairArray;
 // initial hash states
 let _states: State;
 
-// SHA-384
+/**
+ * SHA-384 algorithm creator.
+ */
 export const sha384: HashAlgorithmCreator = {
     create() {
         return sha2.create('SHA-384');
     },
 };
 
-// SHA-512
+/**
+ * SHA-512 algorithm creator.
+ */
 export const sha512: HashAlgorithmCreator = {
     create() {
         return sha2.create('SHA-512');
