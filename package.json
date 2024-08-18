@@ -1,0 +1,59 @@
+{
+  "name": "rsa-oaep-encryption",
+  "description": "Pure JavaScript implementation of encryption using the RSA-OAEP algorithm without relying on the Web Crypto API.",
+  "author": "jiang115jie@gmail.com",
+  "license": "GPL-3.0",
+  "version": "1.0.0",
+  "type": "module",
+  "source": "src/mod.ts",
+  "main": "dist/main.cjs",
+  "module": "dist/main.mjs",
+  "types": "dist/types.d.ts",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "package.json",
+    "docs",
+    "src",
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "check": "pnpm exec tsc --noEmit",
+    "lint": "pnpm exec eslint .",
+    "prebuild": "pnpm dlx rimraf dist && pnpm run check && pnpm run lint",
+    "build": "pnpm exec rollup --config rollup.config.mjs",
+    "test": "deno test --coverage --clean && deno coverage coverage && deno coverage coverage --lcov --output=coverage/cov_profile.lcov",
+    "test:html": "deno test --coverage --clean && deno coverage coverage && deno coverage coverage --html",
+    "predocs": "pnpm dlx rimraf docs",
+    "docs": "pnpm exec typedoc",
+    "prepublishOnly": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JiangJie/rsa-oaep-encryption.git"
+  },
+  "keywords": [
+    "RSA",
+    "OAEP",
+    "encrypt",
+    "encryption",
+    "sha1",
+    "sha256",
+    "sha384",
+    "sha512"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@types/eslint__js": "^8.42.3",
+    "eslint": "^9.9.0",
+    "rollup": "^4.21.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-esbuild": "^6.1.1",
+    "typedoc": "^0.26.5",
+    "typedoc-plugin-markdown": "^4.2.5",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.1.0"
+  },
+  "packageManager": "pnpm@9.7.0"
+}
