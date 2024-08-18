@@ -29,10 +29,10 @@
         "npm:eslint@^9.9.0",
         "npm:rollup-plugin-dts@^6.1.1",
         "npm:rollup-plugin-esbuild@^6.1.1",
-        "npm:rollup@^4.20.0",
-        "npm:typedoc-plugin-markdown@^4.2.3",
+        "npm:rollup@^4.21.0",
+        "npm:typedoc-plugin-markdown@^4.2.5",
         "npm:typedoc@^0.26.5",
-        "npm:typescript-eslint@^8.0.1",
+        "npm:typescript-eslint@^8.1.0",
         "npm:typescript@^5.5.4"
       ]
     }
