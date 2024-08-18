@@ -22,4 +22,4 @@ create(): HashAlgorithm
 
 #### Defined in
 
-[lib/defines.ts:19](https://github.com/JiangJie/rsa-oaep-encryption/blob/70be29a3b33e6f6c5e05bbfdb2dfaf9b5e77f09a/src/lib/defines.ts#L19)
+[lib/defines.ts:19](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/defines.ts#L19)

@@ -16,6 +16,7 @@
 | ------ | ------ |
 | [HashAlgorithm](interfaces/HashAlgorithm.md) | A hash algorithm. |
 | [HashAlgorithmCreator](interfaces/HashAlgorithmCreator.md) | A hash algorithm creator. |
+| [RSAPublicKey](interfaces/RSAPublicKey.md) | RSA public key. |
 
 ## Variables
 

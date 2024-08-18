@@ -7,9 +7,7 @@
 # Function: importPublicKey()
 
 ```ts
-function importPublicKey(pem): {
-  encrypt: ArrayBuffer;
-}
+function importPublicKey(pem): RSAPublicKey
 ```
 
 Import a RSA public key from a PEM format string.
@@ -23,18 +21,10 @@ Used to encrypt data.
 
 ## Returns
 
-```ts
-{
-  encrypt: ArrayBuffer;
-}
-```
+[`RSAPublicKey`](../interfaces/RSAPublicKey.md)
 
 A function that can be used to encrypt data.
 
-| Name | Type | Description | Defined in |
-| ------ | ------ | ------ | ------ |
-| `encrypt` | `ArrayBuffer` | Encrypt data using RSA key. | [mod.ts:27](https://github.com/JiangJie/rsa-oaep-encryption/blob/70be29a3b33e6f6c5e05bbfdb2dfaf9b5e77f09a/src/mod.ts#L27) |
-
 ## Defined in
 
-[mod.ts:17](https://github.com/JiangJie/rsa-oaep-encryption/blob/70be29a3b33e6f6c5e05bbfdb2dfaf9b5e77f09a/src/mod.ts#L17)
+[mod.ts:30](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/mod.ts#L30)

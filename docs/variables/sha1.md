@@ -14,4 +14,4 @@ SHA-1 algorithm creator.
 
 ## Defined in
 
-[lib/sha1.ts:27](https://github.com/JiangJie/rsa-oaep-encryption/blob/70be29a3b33e6f6c5e05bbfdb2dfaf9b5e77f09a/src/lib/sha1.ts#L27)
+[lib/sha1.ts:27](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/sha1.ts#L27)
