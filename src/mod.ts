@@ -9,6 +9,8 @@ export { sha384, sha512 } from './lib/sha512.ts';
 
 /**
  * Import a RSA public key from a PEM format string.
+ * Used to encrypt data.
+ *
  * @param pem The PEM format string.
  * @returns A function that can be used to encrypt data.
  */
