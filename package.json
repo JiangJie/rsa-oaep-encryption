@@ -3,7 +3,7 @@
   "description": "Pure JavaScript implementation of encryption using the RSA-OAEP algorithm without relying on the Web Crypto API.",
   "author": "jiang115jie@gmail.com",
   "license": "GPL-3.0",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "source": "src/mod.ts",
   "main": "dist/main.cjs",
