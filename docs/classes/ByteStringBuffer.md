@@ -1,4 +1,4 @@
-[**rsa-oaep-encryption**](../README.md) • **Docs**
+[**rsa-oaep-encryption**](../README.md)
 
 ***
 
@@ -33,15 +33,41 @@ new ByteStringBuffer(b?): ByteStringBuffer
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:14](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L14)
+[lib/ByteStringBuffer.ts:14](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L14)
 
 ## Properties
 
 | Property | Type | Default value | Defined in |
 | ------ | ------ | ------ | ------ |
-| `read` | `number` | `0` | [lib/ByteStringBuffer.ts:12](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L12) |
+| `read` | `number` | `0` | [lib/ByteStringBuffer.ts:12](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L12) |
 
 ## Methods
+
+### at()
+
+```ts
+at(i): number
+```
+
+Gets a byte at the given index without modifying the read pointer.
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `i` | `number` | the byte index. |
+
+#### Returns
+
+`number`
+
+the byte.
+
+#### Defined in
+
+[lib/ByteStringBuffer.ts:172](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L172)
+
+***
 
 ### bytes()
 
@@ -66,7 +92,7 @@ a string full of binary encoded characters.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:159](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L159)
+[lib/ByteStringBuffer.ts:159](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L159)
 
 ***
 
@@ -86,7 +112,7 @@ this buffer.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:183](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L183)
+[lib/ByteStringBuffer.ts:194](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L194)
 
 ***
 
@@ -106,7 +132,7 @@ this buffer.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:170](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L170)
+[lib/ByteStringBuffer.ts:181](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L181)
 
 ***
 
@@ -126,7 +152,7 @@ the byte.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:87](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L87)
+[lib/ByteStringBuffer.ts:87](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L87)
 
 ***
 
@@ -154,7 +180,7 @@ a binary encoded string of bytes.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:134](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L134)
+[lib/ByteStringBuffer.ts:134](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L134)
 
 ***
 
@@ -181,7 +207,7 @@ the integer.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:115](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L115)
+[lib/ByteStringBuffer.ts:115](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L115)
 
 ***
 
@@ -202,7 +228,7 @@ the word.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:97](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L97)
+[lib/ByteStringBuffer.ts:97](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L97)
 
 ***
 
@@ -222,7 +248,7 @@ the number of bytes in this buffer.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:39](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L39)
+[lib/ByteStringBuffer.ts:39](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L39)
 
 ***
 
@@ -248,7 +274,7 @@ this buffer.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:50](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L50)
+[lib/ByteStringBuffer.ts:50](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L50)
 
 ***
 
@@ -274,7 +300,7 @@ this buffer.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:61](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L61)
+[lib/ByteStringBuffer.ts:61](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L61)
 
 ***
 
@@ -300,7 +326,7 @@ this buffer.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:74](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L74)
+[lib/ByteStringBuffer.ts:74](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L74)
 
 ***
 
@@ -320,7 +346,7 @@ An ArrayBuffer.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:211](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L211)
+[lib/ByteStringBuffer.ts:222](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L222)
 
 ***
 
@@ -340,4 +366,4 @@ a hexadecimal string.
 
 #### Defined in
 
-[lib/ByteStringBuffer.ts:194](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/ByteStringBuffer.ts#L194)
+[lib/ByteStringBuffer.ts:205](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/ByteStringBuffer.ts#L205)

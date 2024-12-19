@@ -1,4 +1,4 @@
-[**rsa-oaep-encryption**](../README.md) • **Docs**
+[**rsa-oaep-encryption**](../README.md)
 
 ***
 
@@ -12,9 +12,10 @@ A hash algorithm.
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| `algorithm` | `string` | [lib/defines.ts:7](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/defines.ts#L7) |
-| `digestLength` | `number` | [lib/defines.ts:8](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/defines.ts#L8) |
-| `messageLength` | `number` | [lib/defines.ts:9](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/defines.ts#L9) |
+| `algorithm` | `string` | [lib/defines.ts:7](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/defines.ts#L7) |
+| `blockLength` | `number` | [lib/defines.ts:8](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/defines.ts#L8) |
+| `digestLength` | `number` | [lib/defines.ts:9](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/defines.ts#L9) |
+| `messageLength` | `number` | [lib/defines.ts:10](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/defines.ts#L10) |
 
 ## Methods
 
@@ -30,7 +31,7 @@ digest(): ByteStringBuffer
 
 #### Defined in
 
-[lib/defines.ts:12](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/defines.ts#L12)
+[lib/defines.ts:13](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/defines.ts#L13)
 
 ***
 
@@ -46,7 +47,7 @@ start(): this
 
 #### Defined in
 
-[lib/defines.ts:10](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/defines.ts#L10)
+[lib/defines.ts:11](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/defines.ts#L11)
 
 ***
 
@@ -68,4 +69,4 @@ update(msg): this
 
 #### Defined in
 
-[lib/defines.ts:11](https://github.com/JiangJie/rsa-oaep-encryption/blob/dfe951b5281117ed87c26600202442b83c94c043/src/lib/defines.ts#L11)
+[lib/defines.ts:12](https://github.com/JiangJie/rsa-oaep-encryption/blob/11c92d65840bc30800ad745b80b41f78d60b8626/src/lib/defines.ts#L12)

@@ -1,4 +1,4 @@
-**rsa-oaep-encryption** • **Docs**
+**rsa-oaep-encryption**
 
 ***
 
