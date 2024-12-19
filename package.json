@@ -44,16 +44,16 @@
     "sha512"
   ],
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
+    "@eslint/js": "^9.17.0",
     "@types/eslint__js": "^8.42.3",
-    "eslint": "^9.9.0",
-    "rollup": "^4.21.0",
+    "eslint": "^9.17.0",
+    "rollup": "^4.28.1",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
-    "typedoc": "^0.26.5",
-    "typedoc-plugin-markdown": "^4.2.5",
-    "typescript": "^5.5.4",
-    "typescript-eslint": "^8.1.0"
+    "typedoc": "^0.27.5",
+    "typedoc-plugin-markdown": "^4.3.3",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1"
   },
-  "packageManager": "pnpm@9.7.0"
+  "packageManager": "pnpm@9.15.0"
 }
