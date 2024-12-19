@@ -163,6 +163,17 @@ export class ByteStringBuffer {
     }
 
     /**
+     * Gets a byte at the given index without modifying the read pointer.
+     *
+     * @param i the byte index.
+     *
+     * @return the byte.
+     */
+    at(i: number): number {
+        return this.data.charCodeAt(this.read + i);
+    }
+
+    /**
      * Compacts this buffer.
      *
      * @return this buffer.

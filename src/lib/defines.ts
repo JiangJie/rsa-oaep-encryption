@@ -5,6 +5,7 @@ import type { ByteStringBuffer } from './ByteStringBuffer.ts';
  */
 export interface HashAlgorithm {
     algorithm: string;
+    blockLength: number;
     digestLength: number;
     messageLength: number;
     start(): this;
