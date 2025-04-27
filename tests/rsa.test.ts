@@ -1,5 +1,13 @@
 import { assert, assertThrows } from '@std/assert';
-import { importPublicKey, sha1, sha256, sha384, sha512, type HashAlgorithm } from '../src/mod.ts';
+import {
+    importPrivateKey,
+    importPublicKey,
+    sha1,
+    sha256,
+    sha384,
+    sha512,
+    type HashAlgorithm,
+} from '../src/mod.ts';
 
 const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAix682LW8jwpZEGjFfoom
@@ -112,6 +120,84 @@ Deno.test('RSA encryption', async () => {
     }
 
     for (let index = 0; index < 100; index++) {
+        await test();
+    }
+});
+
+Deno.test('RSA decryption', async () => {
+    function byteStringToBuffer(str: string): Uint8Array {
+        const { length } = str;
+        const u8a = new Uint8Array(length);
+
+        for (let i = 0; i < length; i++) {
+            u8a[i] = str.charCodeAt(i);
+        }
+
+        return u8a;
+    }
+
+    function importEncryptKey(pem: string, sha: string): Promise<CryptoKey> {
+        pem = pem.replace(/(-----(BEGIN|END) PUBLIC KEY-----|\s)/g, '');
+
+        const publicKey = byteStringToBuffer(atob(pem));
+
+        return crypto.subtle.importKey(
+            'spki',
+            publicKey,
+            {
+                name: 'RSA-OAEP',
+                hash: sha,
+            },
+            false,
+            ['encrypt']
+        );
+    }
+
+    async function encrypt(decryptedData: string, hash: string) {
+        const publicKey = await importEncryptKey(PUBLIC_KEY, hash);
+        const encryptedData = new Uint8Array(
+            await crypto.subtle.encrypt(
+                {
+                    name: 'RSA-OAEP',
+                },
+                publicKey,
+                new TextEncoder().encode(decryptedData)
+            )
+        );
+
+        let output = '';
+
+        for (let i = 0; i < encryptedData.length; i++) {
+            output += String.fromCharCode(encryptedData[i]);
+        }
+
+        return output;
+    }
+
+    assertThrows(() => importPrivateKey(PRIVATE_KEY.slice(1)));
+    assertThrows(() => importPrivateKey(PRIVATE_KEY.replace('+', '')));
+    assertThrows(() => importPrivateKey(PRIVATE_KEY.replace('M', 'm')));
+    assertThrows(() => importPrivateKey(PRIVATE_KEY).decrypt(data, {} as unknown as HashAlgorithm));
+
+    async function test() {
+        let encryptedData = await encrypt(data, 'SHA-1');
+        let decryptedData = importPrivateKey(PRIVATE_KEY).decrypt(encryptedData, sha1.create());
+        assert(data === decryptedData);
+
+        encryptedData = await encrypt(data, 'SHA-256');
+        decryptedData = importPrivateKey(PRIVATE_KEY).decrypt(encryptedData, sha256.create());
+        assert(data === decryptedData);
+
+        encryptedData = await encrypt(data, 'SHA-384');
+        decryptedData = importPrivateKey(PRIVATE_KEY).decrypt(encryptedData, sha384.create());
+        assert(data === decryptedData);
+
+        encryptedData = await encrypt(data, 'SHA-512');
+        decryptedData = importPrivateKey(PRIVATE_KEY).decrypt(encryptedData, sha512.create());
+        assert(data === decryptedData);
+    }
+
+    for (let index = 0; index < 20; index++) {
         await test();
     }
 });

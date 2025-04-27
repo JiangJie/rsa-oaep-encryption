@@ -1,5 +1,5 @@
 import type { HashAlgorithm } from './lib/defines.ts';
-import { publicKeyFromPem } from './lib/rsa.ts';
+import { privateKeyFromPem, publicKeyFromPem } from './lib/rsa.ts';
 
 export { ByteStringBuffer } from './lib/ByteStringBuffer.ts';
 export type { HashAlgorithm, HashAlgorithmCreator } from './lib/defines.ts';
@@ -33,6 +33,38 @@ export function importPublicKey(pem: string): RSAPublicKey {
     return {
         encrypt(data: string, hash: HashAlgorithm): ArrayBuffer {
             return publicKey.encrypt(data, {
+                md: hash,
+            });
+        },
+    };
+}
+
+/**
+ * RSA private key.
+ */
+export interface RSAPrivateKey {
+    /**
+     * Decrypt data using RSA key.
+     * @param data A string to be decrypted.
+     * @param hash Which hash algorithm to use.
+     * @returns Decrypted data as string.
+     */
+    decrypt(data: string, hash: HashAlgorithm): string;
+}
+
+/**
+ * Import a RSA private key from a PEM format string.
+ * Used to decrypt data.
+ *
+ * @param pem The PEM format string.
+ * @returns A function that can be used to decrypt data.
+ */
+export function importPrivateKey(pem: string): RSAPrivateKey {
+    const privateKey = privateKeyFromPem(pem);
+
+    return {
+        decrypt(data: string, hash: HashAlgorithm): string {
+            return privateKey.decrypt(data, {
                 md: hash,
             });
         },

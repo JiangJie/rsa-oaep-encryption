@@ -255,6 +255,115 @@ const PublicKeyValidator = {
     }]
 };
 
+// validator for an RSA private key
+const RSAPrivateKeyValidator = {
+    // RSAPrivateKey
+    // name: 'RSAPrivateKey',
+    tagClass: Class.UNIVERSAL,
+    type: Type.SEQUENCE,
+    constructed: true,
+    value: [{
+        // Version (INTEGER)
+        // name: 'RSAPrivateKey.version',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyVersion',
+    }, {
+        // modulus (n)
+        // name: 'RSAPrivateKey.modulus',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyModulus',
+    }, {
+        // publicExponent (e)
+        // name: 'RSAPrivateKey.publicExponent',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyPublicExponent',
+    }, {
+        // privateExponent (d)
+        // name: 'RSAPrivateKey.privateExponent',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyPrivateExponent',
+    }, {
+        // prime1 (p)
+        // name: 'RSAPrivateKey.prime1',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyPrime1',
+    }, {
+        // prime2 (q)
+        // name: 'RSAPrivateKey.prime2',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyPrime2',
+    }, {
+        // exponent1 (d mod (p-1))
+        // name: 'RSAPrivateKey.exponent1',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyExponent1',
+    }, {
+        // exponent2 (d mod (q-1))
+        // name: 'RSAPrivateKey.exponent2',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyExponent2',
+    }, {
+        // coefficient ((inverse of q) mod p)
+        // name: 'RSAPrivateKey.coefficient',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyCoefficient',
+    }]
+};
+
+// validator for a PrivateKeyInfo structure
+const PrivateKeyValidator = {
+    // name: 'PrivateKeyInfo',
+    tagClass: Class.UNIVERSAL,
+    type: Type.SEQUENCE,
+    constructed: true,
+    value: [{
+        // Version (INTEGER)
+        // name: 'PrivateKeyInfo.version',
+        tagClass: Class.UNIVERSAL,
+        type: Type.INTEGER,
+        constructed: false,
+        // capture: 'privateKeyVersion',
+    }, {
+        // privateKeyAlgorithm
+        // name: 'PrivateKeyInfo.privateKeyAlgorithm',
+        tagClass: Class.UNIVERSAL,
+        type: Type.SEQUENCE,
+        constructed: true,
+        value: [{
+            // name: 'AlgorithmIdentifier.algorithm',
+            tagClass: Class.UNIVERSAL,
+            type: Type.OID,
+            constructed: false,
+            // capture: 'privateKeyOid',
+        }]
+    }, {
+        // PrivateKey
+        // name: 'PrivateKeyInfo',
+        tagClass: Class.UNIVERSAL,
+        type: Type.OCTETSTRING,
+        constructed: false,
+        // capture: 'privateKey',
+    }]
+};
+
 /**
  * Deconstructing a public key from an ASN.1 object.
  * @param obj the ASN.1 object to deconstruct.
@@ -291,6 +400,49 @@ export function deconstructRSAPublicKey(obj: ASN1) {
     return null;
 }
 
+
+/**
+ * Deconstructing a private key from an ASN.1 object.
+ * @param obj the ASN.1 object to deconstruct.
+ * @returns privateKeyOid and rsaPrivateKey or null when the object is invalid.
+ */
+export function deconstructPrivateKey(obj: ASN1) {
+    if (validate(obj, PrivateKeyValidator) && PrivateKeyValidator.value.every((x, i) => {
+        return validate(obj.value[i] as ASN1, x);
+    })) {
+        return {
+            privateKey: (obj.value[2] as ASN1).value as string,
+        };
+    }
+
+    return null;
+}
+
+/**
+ * Deconstructing a RSA private key from an ASN.1 object.
+ * @param obj the ASN.1 object to deconstruct.
+ * @returns privateKeyModulus and privateKeyExponent or null when the object is invalid.
+ */
+export function deconstructRSAPrivateKey(obj: ASN1) {
+    if (validate(obj, RSAPrivateKeyValidator) && RSAPrivateKeyValidator.value.every((x, i) => {
+        return validate(obj.value[i] as ASN1, x);
+    })) {
+        return {
+            privateKeyVersion: (obj.value[0] as ASN1).value as string,
+            privateKeyModulus: (obj.value[1] as ASN1).value as string,
+            privateKeyPublicExponent: (obj.value[2] as ASN1).value as string,
+            privateKeyPrivateExponent: (obj.value[3] as ASN1).value as string,
+            privateKeyPrime1: (obj.value[4] as ASN1).value as string,
+            privateKeyPrime2: (obj.value[5] as ASN1).value as string,
+            privateKeyExponent1: (obj.value[6] as ASN1).value as string,
+            privateKeyExponent2: (obj.value[7] as ASN1).value as string,
+            privateKeyCoefficient: (obj.value[8] as ASN1).value as string,
+        };
+    }
+
+    return null;
+}
+
 /**
  * Validates that the given ASN.1 object is at least a super set of the
  * given ASN.1 structure. Only tag classes and types are checked. An
@@ -313,11 +465,15 @@ export function deconstructRSAPublicKey(obj: ASN1) {
  * @return true on success, false on failure.
  */
 function validate(obj: ASN1, v: Validator): boolean {
-    return obj.tagClass === v.tagClass
-        && obj.type === v.type
+    return (
+        obj.tagClass === v.tagClass &&
+        obj.type === v.type &&
         // ensure constructed flag is the same if specified
-        && obj.constructed === v.constructed
-        && (!v.value || obj.value.length === v.value.length);
+        obj.constructed === v.constructed &&
+        (!v.value ||
+            obj.value.length === v.value.length ||
+            (Array.isArray(obj.value) && obj.value.filter((v) => v.value).length == v.value.length))
+    );
 }
 
 /**
@@ -341,7 +497,8 @@ function validate(obj: ASN1, v: Validator): boolean {
  * @return the parsed asn1 object.
  */
 export function fromDer(bytes: string): ASN1 {
-    const value = _fromDer(new ByteStringBuffer(bytes), 0, {
+    const buffer = new ByteStringBuffer(bytes);
+    const value = _fromDer(buffer, buffer.length(), 0, {
         strict: true,
         decodeBitStrings: true,
     });
@@ -392,11 +549,12 @@ export function derToOid(bytes: string): string {
  *
  * @return the length of the BER-encoded ASN.1 value or undefined.
  */
-function _getValueLength(bytes: ByteStringBuffer): number {
+function _getValueLength(bytes: ByteStringBuffer, remaining: number): number {
     // TODO: move this function and related DER/BER functions to a der.js
     // file; better abstract ASN.1 away from der/ber.
     // fromDer already checked that this byte exists
     const b2 = bytes.getByte();
+    remaining--;
 
     // see if the length is "short form" or "long form" (bit 8 set)
     let length: number;
@@ -408,27 +566,58 @@ function _getValueLength(bytes: ByteStringBuffer): number {
         // the number of bytes the length is specified in bits 7 through 1
         // and each length byte is in big-endian base-256
         const longFormBytes = b2 & 0x7F;
+        _checkBufferLength(bytes, remaining, longFormBytes);
         // bypass tsc error
         length = bytes.getInt(longFormBytes << 3 as 8);
     }
+    // FIXME: this will only happen for 32 bit getInt with high bit set
+    if (length < 0) {
+        throw new Error('Negative length: ' + length);
+    }
     return length;
+}
+
+/**
+ * Check if the byte buffer has enough bytes. Throws an Error if not.
+ *
+ * @param bytes the byte buffer to parse from.
+ * @param remaining the bytes remaining in the current parsing state.
+ * @param n the number of bytes the buffer must have.
+ */
+function _checkBufferLength(bytes: ByteStringBuffer, remaining: number, n: number) {
+    if (remaining < n) {
+        throw new Error(
+            `Too few bytes to parse DER. available=${bytes.length()} remaining=${remaining} requested=${n}`
+        );
+    }
 }
 
 /**
  * Internal function to parse an asn1 object from a byte buffer in DER format.
  *
  * @param bytes the byte buffer to parse from.
+ * @param remaining the number of bytes remaining for this chunk.
  * @param depth the current parsing depth.
  * @param options object with same options as fromDer().
  *
  * @return the parsed asn1 object.
  */
-function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
-    strict: boolean;
-    decodeBitStrings: boolean;
-}): ASN1 {
+function _fromDer(
+    bytes: ByteStringBuffer,
+    remaining: number,
+    depth: number,
+    options: {
+        strict: boolean;
+        decodeBitStrings: boolean;
+    }
+): ASN1 {
+    // minimum length for ASN.1 DER structure is 2
+    _checkBufferLength(bytes, remaining, 2);
+
     // get the first byte
     const b1 = bytes.getByte();
+    // consumed one byte
+    remaining--;
 
     // get the tag class
     const tagClass = (b1 & 0xC0);
@@ -438,7 +627,19 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
 
     // get the variable value length and adjust remaining bytes
     let start = bytes.length();
-    let length = _getValueLength(bytes);
+    let length = _getValueLength(bytes, remaining);
+    remaining -= start - bytes.length();
+
+    // ensure there are enough bytes to get the value
+    if (length > remaining) {
+        if (options.strict) {
+            throw new Error(
+                `Too few bytes to read ASN.1 value. available=${bytes.length()} remaining=${remaining} requested=${length}`
+            );
+        }
+        // Note: be lenient with truncated values and use remaining state bytes
+        length = remaining;
+    }
 
     // value storage
     let value: string | ASN1[] | undefined;
@@ -453,7 +654,8 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
         // parsing asn1 object of definite length
         while (length > 0) {
             start = bytes.length();
-            value.push(_fromDer(bytes, depth + 1, options));
+            value.push(_fromDer(bytes, remaining, depth + 1, options));
+            remaining -= start - bytes.length();
             length -= start - bytes.length();
         }
     }
@@ -474,9 +676,13 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
         (type === Type.BITSTRING /*|| type === Type.OCTETSTRING*/) &&
         length > 1) {
         // save read position
+        const savedRead = bytes.read;
+        const savedRemaining = remaining;
         let unused = 0;
         if (type === Type.BITSTRING) {
+            _checkBufferLength(bytes, remaining, 1);
             unused = bytes.getByte();
+            remaining--;
         }
         // if all bits are used, maybe the BIT/OCTET STRING holds ASN.1 objs
         if (unused === 0) {
@@ -488,8 +694,9 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
                 strict: true,
                 decodeBitStrings: true
             };
-            const composed = _fromDer(bytes, depth + 1, subOptions);
+            const composed = _fromDer(bytes, remaining, depth + 1, subOptions);
             let used = start - bytes.length();
+            remaining -= used;
             if (type === Type.BITSTRING) {
                 used++;
             }
@@ -500,6 +707,11 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
                 value = [composed];
             }
         }
+        if (value === undefined) {
+            // restore read position
+            bytes.read = savedRead;
+            remaining = savedRemaining;
+        }
     }
 
     if (value === undefined) {
@@ -507,6 +719,7 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
         // TODO: do DER to OID conversion and vice-versa in .toDer?
 
         value = bytes.getBytes(length);
+        remaining -= length;
     }
 
     // add BIT STRING contents if available

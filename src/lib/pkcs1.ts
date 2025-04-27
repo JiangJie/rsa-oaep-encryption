@@ -109,6 +109,97 @@ export function encode_rsa_oaep(key: BigInteger, message: string, options: RSAEn
     return '\x00' + maskedSeed + maskedDB;
 }
 
+/**
+ * Decode the given RSAES-OAEP encoded message (EM) using key, with optional
+ * label (L).
+ *
+ * This method does not perform RSA decryption, it only decodes the message
+ * using RSAES-OAEP.
+ *
+ * @param key the RSA key to use.
+ * @param em the encoded message to decode.
+ * @param options the options to use:
+ *          label an optional label to use.
+ *          md the message digest object to use for OAEP, undefined for SHA-1.
+ *          mgf1 optional mgf1 parameters:
+ *            md the message digest object to use for MGF1.
+ *
+ * @return the decoded message bytes.
+ */
+export function decode_rsa_oaep(key: BigInteger, em: string, options: RSAEncodeOptions): string {
+    // parse arguments
+    const md = options.md;
+
+    // compute length in bytes
+    const keyLength = Math.ceil(key.bitLength() / 8);
+
+    if (em.length !== keyLength) {
+        throw new Error(
+            `RSAES-OAEP encoded message length is invalid. length=${em.length} expectedLength=${keyLength}`
+        );
+    }
+
+    md.start();
+
+    // default MGF-1 to same as OAEP
+    const mgf1Md = md;
+
+    if (keyLength < 2 * md.digestLength + 2) {
+        throw new Error('RSAES-OAEP key is too short for the hash function.');
+    }
+
+    const label = '';
+    md.update(label);
+
+    const lHash = md.digest().getBytes();
+
+    // split the message into its parts
+    const y = em.charAt(0);
+    const maskedSeed = em.substring(1, md.digestLength + 1);
+    const maskedDB = em.substring(1 + md.digestLength);
+
+    const seedMask = rsa_mgf1(maskedDB, md.digestLength, mgf1Md);
+    const seed = xorBytes(maskedSeed, seedMask, maskedSeed.length);
+
+    const dbMask = rsa_mgf1(seed, keyLength - md.digestLength - 1, mgf1Md);
+    const db = xorBytes(maskedDB, dbMask, maskedDB.length);
+
+    const lHashPrime = db.substring(0, md.digestLength);
+
+    // constant time check that all values match what is expected
+    let error = +(y !== '\x00');
+
+    // constant time check lHash vs lHashPrime
+    for (let i = 0; i < md.digestLength; ++i) {
+        error |= +(lHash.charAt(i) !== lHashPrime.charAt(i));
+    }
+
+    // "constant time" find the 0x1 byte separating the padding (zeros) from the
+    // message
+    // TODO: It must be possible to do this in a better/smarter way?
+    let in_ps = 1;
+    let index = md.digestLength;
+    for (let j = md.digestLength; j < db.length; j++) {
+        const code = db.charCodeAt(j);
+
+        const is_0 = (code & 0x1) ^ 0x1;
+
+        // non-zero if not 0 or 1 in the ps section
+        const error_mask = in_ps ? 0xfffe : 0x0000;
+        error |= code & error_mask;
+
+        // latch in_ps to zero after we find 0x1
+        in_ps = in_ps & is_0;
+        index += in_ps;
+    }
+
+    if (error || db.charCodeAt(index) !== 0x1) {
+        throw new Error('Invalid RSAES-OAEP padding.');
+    }
+
+    return db.substring(index + 1);
+}
+
 function rsa_mgf1(seed: string, maskLength: number, hash: HashAlgorithm): string {
     let t = '';
     const count = Math.ceil(maskLength / hash.digestLength);
