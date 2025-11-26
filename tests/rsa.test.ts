@@ -1,5 +1,5 @@
 import { assert, assertThrows } from '@std/assert';
-import { importPublicKey, sha1, sha256, sha384, sha512, type HashAlgorithm } from '../src/mod.ts';
+import { importPublicKey, sha1, sha256, sha384, sha512, type HashAlgorithm } from 'rsa-oaep-encryption';
 
 const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAix682LW8jwpZEGjFfoom
@@ -45,7 +45,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 const data = 'rsa-oaep-encryption';
 
 Deno.test('RSA encryption', async () => {
-    function byteStringToBuffer(str: string): Uint8Array {
+    function byteStringToBuffer(str: string): Uint8Array<ArrayBuffer> {
         const { length } = str;
         const u8a = new Uint8Array(length);
 

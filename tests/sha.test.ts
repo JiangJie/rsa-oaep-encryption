@@ -1,5 +1,5 @@
 import { assert } from '@std/assert';
-import { sha1, sha256, sha384, sha512 } from '../src/mod.ts';
+import { sha1, sha256, sha384, sha512 } from 'rsa-oaep-encryption';
 
 const data = 'rsa-oaep-encryption';
 
