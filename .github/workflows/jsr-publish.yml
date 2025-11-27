@@ -1,4 +1,4 @@
-# Publish to JSR.
+# This workflow will run tests using deno and then publish a package to JSR.
 
 name: JSR Package
 on:

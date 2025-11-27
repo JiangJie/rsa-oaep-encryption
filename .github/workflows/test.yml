@@ -1,4 +1,4 @@
-# This workflow will run tests using bun and then upload the coverage reports to Codecov.
+# This workflow will run tests using deno and then upload the coverage reports to Codecov.
 
 name: Run Tests
 
