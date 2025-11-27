@@ -12,16 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
 
       - name: Install pnpm
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: latest
       - run: npm install pnpm -g
 
       - name: Run test cases
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v2
       - run: pnpm test
 
   publish-npm:
@@ -29,10 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
 
       - name: Publish npm package
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: latest
           registry-url: https://registry.npmjs.org/
