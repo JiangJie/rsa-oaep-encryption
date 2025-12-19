@@ -191,7 +191,7 @@ export class BigInteger {
                     r,
                     2 * i + 1,
                     c,
-                    x.t - i - 1
+                    x.t - i - 1,
                 )) >= x.DV
             ) {
                 r.data[i + x.t] -= x.DV;
@@ -210,7 +210,7 @@ export class BigInteger {
     divRemTo(m: BigInteger, r: BigInteger): void {
         const pm = m.abs();
         const pt = this.abs();
-        const y = nbi()
+        const y = nbi();
         const nsh = this.DB - nbits(pm.data[pm.t - 1]); // normalize modulus
         pm.lShiftTo(nsh, y);
         pt.lShiftTo(nsh, r);

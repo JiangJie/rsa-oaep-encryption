@@ -140,7 +140,7 @@ export interface ASN1 {
     constructed: boolean;
     tagClass: number;
     type: number;
-    value: string | ASN1[],
+    value: string | ASN1[];
     bitStringContents?: string;
 }
 
@@ -210,7 +210,7 @@ const RSAPublicKeyValidator = {
         type: Type.INTEGER,
         constructed: false,
         // capture: 'publicKeyExponent'
-    }]
+    }],
 };
 
 // validator for an SubjectPublicKeyInfo structure
@@ -236,7 +236,7 @@ const PublicKeyValidator = {
             type: Type.OID,
             constructed: false,
             // capture: 'publicKeyOid'
-        }]
+        }],
     }, {
         // subjectPublicKey
         // name: 'SubjectPublicKeyInfo.subjectPublicKey',
@@ -251,8 +251,8 @@ const PublicKeyValidator = {
             constructed: true,
             // optional: true,
             // captureAsn1: 'rsaPublicKey'
-        }]
-    }]
+        }],
+    }],
 };
 
 /**
@@ -480,7 +480,7 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
             const subOptions = {
                 // enforce strict mode to avoid parsing ASN.1 from plain data
                 strict: true,
-                decodeBitStrings: true
+                decodeBitStrings: true,
             };
             const composed = _fromDer(bytes, depth + 1, subOptions);
             const used = start - bytes.length() + 1; // +1 for the unused bits byte

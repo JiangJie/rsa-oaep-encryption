@@ -78,7 +78,7 @@ export const sha1: HashAlgorithmCreator = {
                     h1: 0xEFCDAB89,
                     h2: 0x98BADCFE,
                     h3: 0x10325476,
-                    h4: 0xC3D2E1F0
+                    h4: 0xC3D2E1F0,
                 };
                 return md;
             },
@@ -178,7 +178,7 @@ export const sha1: HashAlgorithmCreator = {
                     h1: _state.h1,
                     h2: _state.h2,
                     h3: _state.h3,
-                    h4: _state.h4
+                    h4: _state.h4,
                 };
                 _update(s2, _w, finalBlock);
                 const rval = new ByteStringBuffer();
@@ -196,7 +196,7 @@ export const sha1: HashAlgorithmCreator = {
 
         return md;
     },
-}
+};
 
 /**
  * Initializes the constant tables.

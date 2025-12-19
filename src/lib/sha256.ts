@@ -89,7 +89,7 @@ export const sha256: HashAlgorithmCreator = {
                     h4: 0x510E527F,
                     h5: 0x9B05688C,
                     h6: 0x1F83D9AB,
-                    h7: 0x5BE0CD19
+                    h7: 0x5BE0CD19,
                 };
                 return md;
             },
@@ -192,7 +192,7 @@ export const sha256: HashAlgorithmCreator = {
                     h4: _state.h4,
                     h5: _state.h5,
                     h6: _state.h6,
-                    h7: _state.h7
+                    h7: _state.h7,
                 };
                 _update(s2, _w, finalBlock);
                 const rval = new ByteStringBuffer();
