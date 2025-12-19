@@ -2,29 +2,37 @@
   "name": "rsa-oaep-encryption",
   "description": "Pure JavaScript implementation of encryption using the RSA-OAEP algorithm without relying on the Web Crypto API.",
   "author": "jiang115jie@gmail.com",
-  "license": "GPL-3.0",
+  "license": "BSD-3-Clause",
   "version": "1.0.1",
   "type": "module",
   "source": "src/mod.ts",
   "main": "dist/main.cjs",
   "module": "dist/main.mjs",
   "types": "dist/types.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/main.mjs",
+      "require": "./dist/main.cjs",
+      "default": "./dist/main.mjs"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "LICENSE",
     "README.md",
-    "package.json",
-    "docs",
-    "src",
+    "CHANGELOG.md",
     "dist"
   ],
   "sideEffects": false,
   "scripts": {
     "check": "pnpm exec tsc --noEmit",
     "lint": "pnpm exec eslint .",
-    "prebuild": "pnpm dlx rimraf dist && pnpm run check && pnpm run lint",
-    "build": "pnpm exec rollup --config rollup.config.mjs",
-    "test": "deno test --coverage --clean && deno coverage coverage && deno coverage coverage --lcov --output=coverage/cov_profile.lcov",
-    "test:html": "deno test --coverage --clean && deno coverage coverage && deno coverage coverage --html",
+    "prebuild": "pnpm run check && pnpm run lint",
+    "build": "pnpm exec vite build",
+    "test": "pnpm exec vitest run --coverage",
+    "test:watch": "pnpm exec vitest",
+    "test:ui": "pnpm exec vitest --ui",
     "predocs": "pnpm dlx rimraf docs",
     "docs": "pnpm exec typedoc",
     "prepublishOnly": "pnpm run build"
@@ -44,14 +52,15 @@
     "sha512"
   ],
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "eslint": "^9.39.1",
-    "rollup": "^4.53.3",
-    "rollup-plugin-dts": "^6.3.0",
-    "rollup-plugin-esbuild": "^6.2.1",
-    "typedoc": "^0.28.14",
-    "typedoc-plugin-markdown": "^4.9.0",
+    "@eslint/js": "^9.39.2",
+    "@stylistic/eslint-plugin": "^5.6.1",
+    "@vitest/coverage-v8": "^4.0.16",
+    "eslint": "^9.39.2",
+    "typedoc": "^0.28.15",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.0"
+    "typescript-eslint": "^8.50.0",
+    "vite": "^7.3.0",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^4.0.16"
   }
 }
