@@ -220,11 +220,12 @@ export class ByteStringBuffer {
      * @return An ArrayBuffer.
      */
     toArrayBuffer(): ArrayBuffer {
-        const ab = new ArrayBuffer(this.length());
+        const len = this.length();
+        const ab = new ArrayBuffer(len);
         const u8a = new Uint8Array(ab);
 
-        for (let i = this.read; i < this.data.length; ++i) {
-            u8a[i] = this.data.charCodeAt(i);
+        for (let i = 0; i < len; i++) {
+            u8a[i] = this.data.charCodeAt(this.read + i);
         }
 
         return ab;
