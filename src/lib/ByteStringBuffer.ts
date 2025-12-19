@@ -26,7 +26,7 @@
  */
 export class ByteStringBuffer {
     // used for v8 optimization
-    private _constructedStringLength = 0;
+    private constructedStringLength = 0;
     private data = '';
 
     read = 0;
@@ -53,8 +53,8 @@ export class ByteStringBuffer {
       substr(). This function is called when adding data to this buffer to ensure
       these types of strings are periodically joined to reduce the memory
       footprint. */
-    private _optimizeConstructedString(x: number): void {
-        this._constructedStringLength += x;
+    private optimizeConstructedString(x: number): void {
+        this.constructedStringLength += x;
     }
 
     /**
@@ -86,7 +86,7 @@ export class ByteStringBuffer {
      */
     putBytes(bytes: string): this {
         this.data += bytes;
-        this._optimizeConstructedString(bytes.length);
+        this.optimizeConstructedString(bytes.length);
         return this;
     }
 
