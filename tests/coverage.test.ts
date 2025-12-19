@@ -27,6 +27,61 @@ describe('ByteStringBuffer', () => {
             expect(buffer.at(1)).toBe('l'.charCodeAt(0));
         });
     });
+
+    describe('toArrayBuffer() method', () => {
+        it('should convert buffer to ArrayBuffer when read = 0', () => {
+            const buffer = new ByteStringBuffer('\x00\x01\x02\x03');
+            const ab = buffer.toArrayBuffer();
+            const u8a = new Uint8Array(ab);
+            expect(u8a.length).toBe(4);
+            expect(u8a[0]).toBe(0);
+            expect(u8a[1]).toBe(1);
+            expect(u8a[2]).toBe(2);
+            expect(u8a[3]).toBe(3);
+        });
+
+        it('should convert buffer to ArrayBuffer correctly when read > 0', () => {
+            const buffer = new ByteStringBuffer('\x00\x01\x02\x03');
+            buffer.getByte(); // advance read pointer to 1
+            expect(buffer.read).toBe(1);
+            expect(buffer.length()).toBe(3);
+
+            const ab = buffer.toArrayBuffer();
+            const u8a = new Uint8Array(ab);
+
+            // Should only contain bytes after read position
+            expect(u8a.length).toBe(3);
+            expect(u8a[0]).toBe(1); // was at index 1, now at index 0
+            expect(u8a[1]).toBe(2);
+            expect(u8a[2]).toBe(3);
+        });
+
+        it('should handle multiple reads before toArrayBuffer', () => {
+            const buffer = new ByteStringBuffer('\x10\x20\x30\x40\x50');
+            buffer.getByte(); // read = 1
+            buffer.getByte(); // read = 2
+            expect(buffer.read).toBe(2);
+            expect(buffer.length()).toBe(3);
+
+            const ab = buffer.toArrayBuffer();
+            const u8a = new Uint8Array(ab);
+
+            expect(u8a.length).toBe(3);
+            expect(u8a[0]).toBe(0x30);
+            expect(u8a[1]).toBe(0x40);
+            expect(u8a[2]).toBe(0x50);
+        });
+
+        it('should return empty ArrayBuffer when all bytes have been read', () => {
+            const buffer = new ByteStringBuffer('\x01\x02');
+            buffer.getByte();
+            buffer.getByte();
+            expect(buffer.length()).toBe(0);
+
+            const ab = buffer.toArrayBuffer();
+            expect(ab.byteLength).toBe(0);
+        });
+    });
 });
 
 describe('Base64 decode edge cases', () => {
