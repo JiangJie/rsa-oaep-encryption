@@ -132,7 +132,7 @@ export function createPRNGContext(plugin: PRNGPlugin) {
      */
     function _seed(): void {
         // update reseed count
-        ctx.reseeds = (ctx.reseeds === 0xffffffff) ? 0 : ctx.reseeds + 1;
+        ctx.reseeds++;
 
         // goal is to update `key` via:
         // key = hash(key + s)
@@ -186,30 +186,27 @@ export function createPRNGContext(plugin: PRNGPlugin) {
 function defaultSeedFile(needed: number): string {
     const b = new ByteStringBuffer();
 
-    // be sad and add some weak random data
-    if (b.length() < needed) {
-        /* Draws from Park-Miller "minimal standard" 31 bit PRNG,
-        implemented with David G. Carta's optimization: with 32 bit math
-        and without division (Public Domain). */
-        let hi: number;
-        let lo: number;
-        let next: number;
-        let seed = Math.floor(Math.random() * 0x010000);
-        while (b.length() < needed) {
-            lo = 16807 * (seed & 0xFFFF);
-            hi = 16807 * (seed >> 16);
-            lo += (hi & 0x7FFF) << 16;
-            lo += hi >> 15;
-            lo = (lo & 0x7FFFFFFF) + (lo >> 31);
-            seed = lo & 0xFFFFFFFF;
+    /* Draws from Park-Miller "minimal standard" 31 bit PRNG,
+    implemented with David G. Carta's optimization: with 32 bit math
+    and without division (Public Domain). */
+    let hi: number;
+    let lo: number;
+    let next: number;
+    let seed = Math.floor(Math.random() * 0x010000);
+    while (b.length() < needed) {
+        lo = 16807 * (seed & 0xFFFF);
+        hi = 16807 * (seed >> 16);
+        lo += (hi & 0x7FFF) << 16;
+        lo += hi >> 15;
+        lo = (lo & 0x7FFFFFFF) + (lo >> 31);
+        seed = lo & 0xFFFFFFFF;
 
-            // consume lower 3 bytes of seed
-            for (let i = 0; i < 3; ++i) {
-                // throw in more pseudo random
-                next = seed >>> (i << 3);
-                next ^= Math.floor(Math.random() * 0x0100);
-                b.putByte(next & 0xFF);
-            }
+        // consume lower 3 bytes of seed
+        for (let i = 0; i < 3; ++i) {
+            // throw in more pseudo random
+            next = seed >>> (i << 3);
+            next ^= Math.floor(Math.random() * 0x0100);
+            b.putByte(next & 0xFF);
         }
     }
 

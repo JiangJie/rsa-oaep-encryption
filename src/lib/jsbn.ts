@@ -137,7 +137,9 @@ export class BigInteger {
             r.data[i - ds - 1] |= (this.data[i] & bm) << cbs;
             r.data[i - ds] = this.data[i] >> bs;
         }
-        if (bs > 0) r.data[this.t - ds - 1] |= (this.s & bm) << cbs;
+        if (bs > 0) {
+            r.data[this.t - ds - 1] |= (this.s & bm) << cbs;
+        }
         r.t = this.t - ds;
         r.clamp();
     }
@@ -196,7 +198,9 @@ export class BigInteger {
                 r.data[i + x.t + 1] = 1;
             }
         }
-        if (r.t > 0) r.data[r.t - 1] += x.am(i, x.data[i], r, 2 * i, 0, 1);
+        if (r.t > 0) {
+            r.data[r.t - 1] += x.am(i, x.data[i], r, 2 * i, 0, 1);
+        }
         r.s = 0;
         r.clamp();
     }
@@ -230,7 +234,9 @@ export class BigInteger {
         }
         r.t = ys;
         r.clamp();
-        if (nsh > 0) r.rShiftTo(nsh, r); // Denormalize remainder
+        if (nsh > 0) {
+            r.rShiftTo(nsh, r); // Denormalize remainder
+        }
     }
 
     // (protected) return "-1/this % 2^DB"; useful for Mont. reduction

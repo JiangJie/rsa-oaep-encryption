@@ -465,20 +465,14 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
     }
 
     // determine if a non-constructed value should be decoded as a composed
-    // value that contains other ASN.1 objects. BIT STRINGs (and OCTET STRINGs)
-    // can be used this way.
+    // value that contains other ASN.1 objects. BIT STRINGs can be used this way.
     if (value === undefined && options.decodeBitStrings &&
         tagClass === Class.UNIVERSAL &&
-        // FIXME: OCTET STRINGs not yet supported here
-        // .. other parts of forge expect to decode OCTET STRINGs manually
-        (type === Type.BITSTRING /*|| type === Type.OCTETSTRING*/) &&
+        type === Type.BITSTRING &&
         length > 1) {
         // save read position
-        let unused = 0;
-        if (type === Type.BITSTRING) {
-            unused = bytes.getByte();
-        }
-        // if all bits are used, maybe the BIT/OCTET STRING holds ASN.1 objs
+        const unused = bytes.getByte();
+        // if all bits are used, maybe the BIT STRING holds ASN.1 objs
         if (unused === 0) {
             // attempt to parse child asn1 object from the value
             // (stored in array to signal composed value)
@@ -489,10 +483,7 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
                 decodeBitStrings: true
             };
             const composed = _fromDer(bytes, depth + 1, subOptions);
-            let used = start - bytes.length();
-            if (type === Type.BITSTRING) {
-                used++;
-            }
+            const used = start - bytes.length() + 1; // +1 for the unused bits byte
 
             // if the data all decoded and the class indicates UNIVERSAL or
             // CONTEXT_SPECIFIC then assume we've got an encapsulated ASN.1 object
