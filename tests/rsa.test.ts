@@ -1,5 +1,5 @@
-import { assert, assertThrows } from '@std/assert';
-import { importPublicKey, sha1, sha256, sha384, sha512, type HashAlgorithm } from 'rsa-oaep-encryption';
+import { describe, expect, it } from 'vitest';
+import { importPublicKey, sha1, sha256, sha384, sha512, type HashAlgorithm } from '../src/mod.ts';
 
 const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAix682LW8jwpZEGjFfoom
@@ -44,74 +44,95 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
 const data = 'rsa-oaep-encryption';
 
-Deno.test('RSA encryption', async () => {
-    function byteStringToBuffer(str: string): Uint8Array<ArrayBuffer> {
-        const { length } = str;
-        const u8a = new Uint8Array(length);
+function byteStringToBuffer(str: string): Uint8Array<ArrayBuffer> {
+    const { length } = str;
+    const u8a = new Uint8Array(length);
 
-        for (let i = 0; i < length; i++) {
-            u8a[i] = str.charCodeAt(i);
+    for (let i = 0; i < length; i++) {
+        u8a[i] = str.charCodeAt(i);
+    }
+
+    return u8a;
+}
+
+function importDecryptKey(pem: string, sha: string): Promise<CryptoKey> {
+    pem = pem.replace(/(-----(BEGIN|END) PRIVATE KEY-----|\s)/g, '');
+
+    const privateKey = byteStringToBuffer(atob(pem));
+
+    return crypto.subtle.importKey(
+        'pkcs8',
+        privateKey,
+        {
+            name: 'RSA-OAEP',
+            hash: sha,
+        },
+        false,
+        [
+            'decrypt',
+        ],
+    );
+}
+
+async function decrypt(encryptedData: BufferSource, hash: string) {
+    const privateKey = await importDecryptKey(PRIVATE_KEY, hash);
+    const decryptedData = new TextDecoder().decode(await crypto.subtle.decrypt(
+        {
+            name: 'RSA-OAEP',
+        },
+        privateKey,
+        encryptedData,
+    ));
+
+    return decryptedData;
+}
+
+describe('RSA encryption', () => {
+    it('should throw on invalid PEM (missing first char)', () => {
+        expect(() => importPublicKey(PUBLIC_KEY.slice(1))).toThrow();
+    });
+
+    it('should throw on invalid PEM (missing + char)', () => {
+        expect(() => importPublicKey(PUBLIC_KEY.replace('+', ''))).toThrow();
+    });
+
+    it('should throw on invalid PEM (case changed)', () => {
+        expect(() => importPublicKey(PUBLIC_KEY.replace('M', 'm'))).toThrow();
+    });
+
+    it('should throw on invalid hash algorithm', () => {
+        expect(() => importPublicKey(PUBLIC_KEY).encrypt(data, {} as unknown as HashAlgorithm)).toThrow();
+    });
+
+    it('should encrypt with SHA-1 and decrypt correctly', async () => {
+        for (let i = 0; i < 100; i++) {
+            const encryptedData = importPublicKey(PUBLIC_KEY).encrypt(data, sha1.create());
+            const decryptedData = await decrypt(encryptedData, 'SHA-1');
+            expect(decryptedData).toBe(data);
         }
+    });
 
-        return u8a;
-    }
+    it('should encrypt with SHA-256 and decrypt correctly', async () => {
+        for (let i = 0; i < 100; i++) {
+            const encryptedData = importPublicKey(PUBLIC_KEY).encrypt(data, sha256.create());
+            const decryptedData = await decrypt(encryptedData, 'SHA-256');
+            expect(decryptedData).toBe(data);
+        }
+    });
 
-    function importDecryptKey(pem: string, sha: string): Promise<CryptoKey> {
-        pem = pem.replace(/(-----(BEGIN|END) PRIVATE KEY-----|\s)/g, '');
+    it('should encrypt with SHA-384 and decrypt correctly', async () => {
+        for (let i = 0; i < 100; i++) {
+            const encryptedData = importPublicKey(PUBLIC_KEY).encrypt(data, sha384.create());
+            const decryptedData = await decrypt(encryptedData, 'SHA-384');
+            expect(decryptedData).toBe(data);
+        }
+    });
 
-        const privateKey = byteStringToBuffer(atob(pem));
-
-        return crypto.subtle.importKey(
-            'pkcs8',
-            privateKey,
-            {
-                name: 'RSA-OAEP',
-                hash: sha,
-            },
-            false,
-            [
-                'decrypt',
-            ]
-        );
-    }
-
-    async function decrypt(encryptedData: BufferSource, hash: string) {
-        const privateKey = await importDecryptKey(PRIVATE_KEY, hash);
-        const decryptedData = new TextDecoder().decode(await crypto.subtle.decrypt(
-            {
-                name: 'RSA-OAEP',
-            },
-            privateKey,
-            encryptedData
-        ));
-
-        return decryptedData;
-    }
-
-    assertThrows(() => importPublicKey(PUBLIC_KEY.slice(1)));
-    assertThrows(() => importPublicKey(PUBLIC_KEY.replace('+', '')));
-    assertThrows(() => importPublicKey(PUBLIC_KEY.replace('M', 'm')));
-    assertThrows(() => importPublicKey(PUBLIC_KEY).encrypt(data, {} as unknown as HashAlgorithm));
-
-    async function test() {
-        let encryptedData = importPublicKey(PUBLIC_KEY).encrypt(data, sha1.create());
-        let decryptedData = await decrypt(encryptedData, 'SHA-1');
-        assert(data === decryptedData);
-
-        encryptedData = importPublicKey(PUBLIC_KEY).encrypt(data, sha256.create());
-        decryptedData = await decrypt(encryptedData, 'SHA-256');
-        assert(data === decryptedData);
-
-        encryptedData = importPublicKey(PUBLIC_KEY).encrypt(data, sha384.create());
-        decryptedData = await decrypt(encryptedData, 'SHA-384');
-        assert(data === decryptedData);
-
-        encryptedData = importPublicKey(PUBLIC_KEY).encrypt(data, sha512.create());
-        decryptedData = await decrypt(encryptedData, 'SHA-512');
-        assert(data === decryptedData);
-    }
-
-    for (let index = 0; index < 100; index++) {
-        await test();
-    }
+    it('should encrypt with SHA-512 and decrypt correctly', async () => {
+        for (let i = 0; i < 100; i++) {
+            const encryptedData = importPublicKey(PUBLIC_KEY).encrypt(data, sha512.create());
+            const decryptedData = await decrypt(encryptedData, 'SHA-512');
+            expect(decryptedData).toBe(data);
+        }
+    });
 });
