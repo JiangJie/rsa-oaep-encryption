@@ -1,8 +1,28 @@
 /**
- * Constructor for a binary string backed byte buffer.
+ * A binary string backed byte buffer for efficient binary data manipulation.
  *
- * @param [b] the bytes to wrap (either encoded as string, one byte per
- *          character, or as an ArrayBuffer or Typed Array).
+ * This class provides methods for reading and writing binary data using
+ * JavaScript strings as the underlying storage. Each character in the string
+ * represents one byte (0-255).
+ *
+ * @example
+ * ```ts
+ * import { ByteStringBuffer } from 'rsa-oaep-encryption';
+ *
+ * // Create a buffer and write some bytes
+ * const buffer = new ByteStringBuffer();
+ * buffer.putByte(0x48);  // 'H'
+ * buffer.putByte(0x69);  // 'i'
+ *
+ * // Read bytes back
+ * console.log(buffer.toHex());        // "4869"
+ * console.log(buffer.toArrayBuffer()); // ArrayBuffer with [0x48, 0x69]
+ *
+ * // Create from existing binary string
+ * const buffer2 = new ByteStringBuffer('\x00\x01\x02\x03');
+ * console.log(buffer2.length());      // 4
+ * console.log(buffer2.getByte());     // 0
+ * ```
  */
 export class ByteStringBuffer {
     // used for v8 optimization
@@ -11,6 +31,12 @@ export class ByteStringBuffer {
 
     read = 0;
 
+    /**
+     * Creates a new ByteStringBuffer.
+     *
+     * @param b - Optional initial bytes as a binary encoded string
+     *            (one byte per character, char codes 0-255).
+     */
     constructor(b?: string) {
         if (typeof b === 'string') {
             this.data = b;
