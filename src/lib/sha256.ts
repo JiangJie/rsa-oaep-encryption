@@ -31,6 +31,16 @@ let _k: number[];
 
 /**
  * SHA-256 algorithm creator.
+ *
+ * @example
+ * ```ts
+ * import { sha256 } from 'rsa-oaep-encryption';
+ *
+ * const hash = sha256.create();
+ * hash.update('Hello, World!');
+ * const digest = hash.digest();
+ * console.log(digest.toHex()); // "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"
+ * ```
  */
 export const sha256: HashAlgorithmCreator = {
     /**

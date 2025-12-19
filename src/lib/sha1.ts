@@ -23,6 +23,16 @@ let _initialized = false;
 
 /**
  * SHA-1 algorithm creator.
+ *
+ * @example
+ * ```ts
+ * import { sha1 } from 'rsa-oaep-encryption';
+ *
+ * const hash = sha1.create();
+ * hash.update('Hello, World!');
+ * const digest = hash.digest();
+ * console.log(digest.toHex()); // "0a0a9f2a6772942557ab5355d76af442f8f65e01"
+ * ```
  */
 export const sha1: HashAlgorithmCreator = {
     /**

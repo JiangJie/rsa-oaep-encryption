@@ -34,6 +34,17 @@ let _states: State;
 
 /**
  * SHA-384 algorithm creator.
+ *
+ * @example
+ * ```ts
+ * import { sha384 } from 'rsa-oaep-encryption';
+ *
+ * const hash = sha384.create();
+ * hash.update('Hello, World!');
+ * const digest = hash.digest();
+ * console.log(digest.toHex());
+ * // "5485cc9b3365b4305dfb4e8c6a5c6eb8b8c08e9cd3d0e3c5f2b8c7c8d..."
+ * ```
  */
 export const sha384: HashAlgorithmCreator = {
     create() {
@@ -43,6 +54,17 @@ export const sha384: HashAlgorithmCreator = {
 
 /**
  * SHA-512 algorithm creator.
+ *
+ * @example
+ * ```ts
+ * import { sha512 } from 'rsa-oaep-encryption';
+ *
+ * const hash = sha512.create();
+ * hash.update('Hello, World!');
+ * const digest = hash.digest();
+ * console.log(digest.toHex());
+ * // "374d794a95cdcfd8b35993185fef9ba368f160d8daf432d08ba9f1ed1e5abe6c..."
+ * ```
  */
 export const sha512: HashAlgorithmCreator = {
     create() {
