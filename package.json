@@ -1,6 +1,6 @@
 {
   "name": "rsa-oaep-encryption",
-  "description": "Pure JavaScript implementation of encryption using the RSA-OAEP algorithm without relying on the Web Crypto API.",
+  "description": "Pure TypeScript RSA-OAEP encryption for environments without Web Crypto API support.",
   "author": "jiang115jie@gmail.com",
   "license": "BSD-3-Clause",
   "version": "1.0.1",
@@ -44,12 +44,19 @@
   "keywords": [
     "RSA",
     "OAEP",
+    "RSA-OAEP",
     "encrypt",
     "encryption",
+    "crypto",
+    "cryptography",
+    "public-key",
     "sha1",
     "sha256",
     "sha384",
-    "sha512"
+    "sha512",
+    "typescript",
+    "pure-js",
+    "no-native"
   ],
   "devDependencies": {
     "@eslint/js": "^9.39.2",
