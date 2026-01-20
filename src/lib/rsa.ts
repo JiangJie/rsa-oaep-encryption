@@ -134,7 +134,7 @@ function rsaEncrypt(m: string, key: RSAKey): ArrayBuffer {
     }
     // convert 2 characters (1 byte) at a time
     for (; i < yhex.length; i += 2) {
-        u8a[prependedLength + Math.ceil(i / 2)] = parseInt(yhex.substr(i, 2), 16);
+        u8a[prependedLength + Math.ceil(i / 2)] = parseInt(yhex.slice(i, i + 2), 16);
     }
 
     return ab;
