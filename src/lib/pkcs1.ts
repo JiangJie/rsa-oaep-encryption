@@ -45,7 +45,7 @@
  */
 
 import type { HashAlgorithm } from './defines.ts';
-import type { BigInteger } from './jsbn.ts';
+import type { IBigInteger } from './bigint.ts';
 import { random } from './random.ts';
 import { xorBytes } from './util.ts';
 
@@ -71,7 +71,7 @@ export interface RSAEncodeOptions {
  *
  * @return the encoded message bytes.
  */
-export function encode_rsa_oaep(key: BigInteger, message: string, options: RSAEncodeOptions): string {
+export function encode_rsa_oaep(key: IBigInteger, message: string, options: RSAEncodeOptions): string {
     // parse arguments
     const md = options.md;
 

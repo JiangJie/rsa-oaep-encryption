@@ -67,14 +67,14 @@
  */
 
 import { deconstructPublicKey, deconstructRSAPublicKey, derToOid, fromDer, type ASN1 } from './asn1.ts';
+import { createBigInteger, type IBigInteger } from './bigint.ts';
 import { ByteStringBuffer } from './ByteStringBuffer.ts';
-import { BigInteger } from './jsbn.ts';
 import { pemDecode } from './pem.ts';
 import { encode_rsa_oaep, type RSAEncodeOptions } from './pkcs1.ts';
 
 export interface RSAKey {
-    n: BigInteger;
-    e: BigInteger;
+    n: IBigInteger;
+    e: IBigInteger;
 }
 
 const RSAPublicKeyIOD = '1.2.840.113549.1.1.1' as const;
@@ -109,7 +109,7 @@ function rsaEncrypt(m: string, key: RSAKey): ArrayBuffer {
 
     // load encryption block as big integer 'x'
     // FIXME: hex conversion inefficient, get BigInteger w/byte strings
-    const x = new BigInteger(eb.toHex());
+    const x = createBigInteger(eb.toHex());
 
     // do RSA encryption
     const y = x.modPow(key.e, key.n);
@@ -148,7 +148,7 @@ function rsaEncrypt(m: string, key: RSAKey): ArrayBuffer {
  *
  * @return the public key.
  */
-function setRsaPublicKey(n: BigInteger, e: BigInteger) {
+function setRsaPublicKey(n: IBigInteger, e: IBigInteger) {
     const key: RSAKey = {
         n: n,
         e: e,
@@ -202,7 +202,7 @@ function publicKeyFromAsn1(obj: ASN1) {
     const e = new ByteStringBuffer(rsaPublicKey.publicKeyExponent).toHex();
 
     // set public key
-    return setRsaPublicKey(new BigInteger(n), new BigInteger(e));
+    return setRsaPublicKey(createBigInteger(n), createBigInteger(e));
 }
 
 /**
