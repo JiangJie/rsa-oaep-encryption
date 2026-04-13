@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-04-13
+
+### Changed
+
+- Add `/*#__PURE__*/` annotations to top-level calls in `random.ts` and `jsbn.ts` for tree-shaking
+- Remove unnecessary variable initializations and dead code in `jsbn.ts`, `asn1.ts`, `aes.ts`, `util.ts`
+- Replace deprecated `substr` with `slice`
+- Upgrade devDependencies (eslint v10, vite v8, vitest v4.1, etc.)
+- Refine Vite rollup treeshake and output options
+- Use HTTPS for tsconfig JSON schema URL
+
+### Added
+
+- Restore 100% branch coverage for `jsbn.ts`
+
+### Docs
+
+- Rewrite `CODEBUDDY.md` with encryption call-chain diagram, module table, and tree-shaking conventions
+- Rename `CODEBUDDY.md` to `AGENTS.md` for broader AI agent compatibility
+
+### CI/CD
+
+- Trigger JSR publish on release instead of push
+- Add include option to vite-plugin-dts
+
 ## [1.1.0] - 2025-12-20
 
 ### Changed
@@ -75,6 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI/CD workflows
 - TypeDoc-generated API documentation
 
+[1.1.1]: https://github.com/JiangJie/rsa-oaep-encryption/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/JiangJie/rsa-oaep-encryption/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/JiangJie/rsa-oaep-encryption/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/JiangJie/rsa-oaep-encryption/releases/tag/v1.0.0
