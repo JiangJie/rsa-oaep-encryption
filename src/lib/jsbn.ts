@@ -329,14 +329,14 @@ export class BigInteger {
 
     //(public) this^e % m (HAC 14.85)
     modPow(e: BigInteger, m: BigInteger): BigInteger {
-        let i = e.bitLength();
+        let i: number;
         let r = nbv(1);
         const k = 1;
         const z = new Montgomery(m);
 
         // precomputation
         const g = [];
-        let n = 3;
+        let n: number;
         const k1 = k - 1,
             km = (1 << k) - 1;
         g[1] = z.convert(this);
@@ -429,8 +429,7 @@ function nbits(x: number): number {
         x = t;
         r += 2;
     }
-    if ((t = x >> 1) != 0) {
-        x = t;
+    if ((x >> 1) != 0) {
         r += 1;
     }
     return r;

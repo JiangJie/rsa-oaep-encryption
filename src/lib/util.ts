@@ -18,7 +18,7 @@
  */
 export function xorBytes(s1: string, s2: string, n: number): string {
     let s3 = '';
-    let b = 0;
+    let b: number;
     let t = '';
     let i = 0;
     let c = 0;

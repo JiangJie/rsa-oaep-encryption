@@ -437,7 +437,7 @@ function _fromDer(bytes: ByteStringBuffer, depth: number, options: {
     const type = b1 & 0x1F;
 
     // get the variable value length and adjust remaining bytes
-    let start = bytes.length();
+    let start: number;
     let length = _getValueLength(bytes);
 
     // value storage

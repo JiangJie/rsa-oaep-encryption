@@ -672,5 +672,5 @@ export function updateBlock(w: number[], input: number[], output: number[]): voi
     output[0] = (sub[a >>> 24] << 24) ^ (sub[(b >>> 16) & 255] << 16) ^ (sub[(c >>> 8) & 255] << 8) ^ sub[d & 255] ^ w[++i];
     output[1] = (sub[b >>> 24] << 24) ^ (sub[(c >>> 16) & 255] << 16) ^ (sub[(d >>> 8) & 255] << 8) ^ sub[a & 255] ^ w[++i];
     output[2] = (sub[c >>> 24] << 24) ^ (sub[(d >>> 16) & 255] << 16) ^ (sub[(a >>> 8) & 255] << 8) ^ sub[b & 255] ^ w[++i];
-    output[3] = (sub[d >>> 24] << 24) ^ (sub[(a >>> 16) & 255] << 16) ^ (sub[(b >>> 8) & 255] << 8) ^ sub[c & 255] ^ w[++i];
+  output[3] = (sub[d >>> 24] << 24) ^ (sub[(a >>> 16) & 255] << 16) ^ (sub[(b >>> 8) & 255] << 8) ^ sub[c & 255] ^ w[i];
 }
