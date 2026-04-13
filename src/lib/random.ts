@@ -19,8 +19,8 @@ import { ByteStringBuffer } from './ByteStringBuffer.ts';
 import { createPRNGContext, type PRNGPlugin } from './prng.ts';
 import { sha256 } from './sha256.ts';
 
-const _prng_aes_output = new Array<number>(4);
-const _prng_aes_buffer = new ByteStringBuffer();
+const _prng_aes_output = /*#__PURE__*/ new Array<number>(4);
+const _prng_aes_buffer = /*#__PURE__*/ new ByteStringBuffer();
 
 // the default prng plugin, uses AES-128
 const prng_aes: PRNGPlugin = {
@@ -65,4 +65,4 @@ const prng_aes: PRNGPlugin = {
 
 // create default prng context
 /* Random API */
-export const random = createPRNGContext(prng_aes);
+export const random = /*#__PURE__*/ createPRNGContext(prng_aes);

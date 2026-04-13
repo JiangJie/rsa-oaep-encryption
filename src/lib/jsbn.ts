@@ -386,7 +386,7 @@ export class BigInteger {
 //static BigInteger valueOf(long val)
 
 // "constants"
-const BigIntegerONE = nbv(1);
+const BigIntegerONE = /*#__PURE__*/ nbv(1);
 
 // return new, unset BigInteger
 function nbi(): BigInteger {
