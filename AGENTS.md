@@ -1,6 +1,6 @@
-# CODEBUDDY.md
+# AGENTS.md
 
-This file provides guidance to CodeBuddy Code when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
 
 ## Project summary
 - Pure TypeScript RSA-OAEP implementation forked from node-forge so that environments without Web Crypto API support can still import a PEM public key, encrypt data, and run SHA1/256/384/512 hashes with Web Crypto-compatible return types; only RSA-OAEP is retained and coverage is 100%.
