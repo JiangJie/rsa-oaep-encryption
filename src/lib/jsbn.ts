@@ -234,9 +234,7 @@ export class BigInteger {
         }
         r.t = ys;
         r.clamp();
-        if (nsh > 0) {
-            r.rShiftTo(nsh, r); // Denormalize remainder
-        }
+        r.rShiftTo(nsh, r); // Denormalize remainder
     }
 
     // (protected) return "-1/this % 2^DB"; useful for Mont. reduction

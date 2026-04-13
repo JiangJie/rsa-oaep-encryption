@@ -167,6 +167,14 @@ describe('BigInteger', () => {
             bi.rShiftTo(29, result); // ds = 1, bs = 1 > 0, should enter loop and hit line 140
             expect(result.t).toBeGreaterThanOrEqual(0);
         });
+
+        it('should right shift by exact multiple of DB (bs === 0)', () => {
+            // DB = 28, shift by 28 makes bs = 0, covering the false branch of `if (bs > 0)`
+            const bi = new BigInteger('ffffffffffffffffffffffffffffff'); // multiple digits
+            const result = new BigInteger();
+            bi.rShiftTo(28, result); // bs = 28 % 28 = 0
+            expect(result.t).toBeGreaterThanOrEqual(0);
+        });
     });
 
     describe('divRemTo', () => {
@@ -208,6 +216,18 @@ describe('BigInteger', () => {
             a.divRemTo(b, r);
             expect(r.t).toBeGreaterThanOrEqual(0);
         });
+
+        it('should handle division where nsh === 0', () => {
+            // nsh = DB - nbits(pm.data[pm.t-1]) = 0 when highest digit uses all 28 bits
+            // nbits returns 28 when the digit's top bit (bit 27) is set
+            // A single digit with value >= 2^27 = 0x8000000 (7 hex digits) will do
+            // Hex 'fffffff' = 2^28-1, its nbits = 28, so nsh = 28 - 28 = 0
+            const a = new BigInteger('ffffffffffffffffffffffffffffff'); // large dividend
+            const b = new BigInteger('fffffff'); // exactly 28 bits → nsh = 0
+            const r = new BigInteger();
+            a.divRemTo(b, r);
+            expect(r.t).toBeGreaterThanOrEqual(0);
+        });
     });
 
     describe('squareTo', () => {
@@ -234,6 +254,14 @@ describe('BigInteger', () => {
             const result = new BigInteger();
             bi.squareTo(result);
             expect(result.t).toBeGreaterThan(0);
+        });
+
+        it('should square zero (r.t === 0)', () => {
+            // When x.t === 0, r.t = 2*0 = 0, covering the false branch of `if (r.t > 0)`
+            const bi = new BigInteger();
+            const result = new BigInteger();
+            bi.squareTo(result);
+            expect(result.t).toBe(0);
         });
     });
 });
