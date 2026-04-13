@@ -38,21 +38,22 @@ importPublicKey(pem)
   → publicKeyFromPem (src/lib/rsa.ts)
     → pemDecode (src/lib/pem.ts)          — PEM → DER binary string
     → fromDer (src/lib/asn1.ts)           — DER → ASN.1 tree
-    → publicKeyFromAsn1                    — ASN.1 → BigInteger(n, e)
+    → publicKeyFromAsn1                    — ASN.1 → IBigInteger(n, e)
   → RSAPublicKey.encrypt(data, hash)
     → encode_rsa_oaep (src/lib/pkcs1.ts)  — OAEP padding with MGF1
       → random.generateSync (src/lib/random.ts) — PRNG seed via AES-CTR (src/lib/aes.ts)
-    → rsaEncrypt                           — BigInteger modPow then → ArrayBuffer
+    → rsaEncrypt                           — IBigInteger.modPow then → ArrayBuffer
 ```
 
 ### Internal modules (`src/lib/`)
 | File | Role |
 | --- | --- |
-| `rsa.ts` | PEM parsing, ASN.1 OID validation, RSA exponentiation via `BigInteger.modPow` |
+| `rsa.ts` | PEM parsing, ASN.1 OID validation, RSA exponentiation via `IBigInteger.modPow` |
+| `bigint.ts` | `IBigInteger` interface + `NativeBigInteger` (native BigInt) + `createBigInteger` factory with runtime detection |
 | `pkcs1.ts` | OAEP encode + MGF1 mask generation |
 | `asn1.ts` | DER parser, `SubjectPublicKeyInfo` / `RSAPublicKey` validators |
 | `pem.ts` | PEM envelope decode (regex + base64) |
-| `jsbn.ts` | Big-integer arithmetic: `BigInteger` class + Montgomery reduction for `modPow` |
+| `jsbn.ts` | Fallback big-integer arithmetic: `BigInteger` class + Montgomery reduction for `modPow` |
 | `ByteStringBuffer.ts` | Binary string-backed byte buffer used throughout for I/O |
 | `sha1.ts` / `sha256.ts` / `sha512.ts` | Hash implementations satisfying `HashAlgorithm` interface |
 | `random.ts` | Fortuna-based PRNG using AES-128 CTR from `aes.ts` |
