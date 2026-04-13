@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-04-13
+
+### Added
+
+- Prefer native `BigInt` for RSA modular exponentiation with automatic jsbn fallback for environments without `BigInt` support
+- `IBigInteger` interface and `createBigInteger` factory with runtime detection (`src/lib/bigint.ts`)
+
 ## [1.1.1] - 2026-04-13
 
 ### Changed
@@ -100,6 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI/CD workflows
 - TypeDoc-generated API documentation
 
+[1.2.0]: https://github.com/JiangJie/rsa-oaep-encryption/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/JiangJie/rsa-oaep-encryption/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/JiangJie/rsa-oaep-encryption/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/JiangJie/rsa-oaep-encryption/compare/v1.0.0...v1.0.1
