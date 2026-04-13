@@ -3,45 +3,71 @@
 This file provides guidance to CodeBuddy Code when working with code in this repository.
 
 ## Project summary
-- Pure TypeScript RSA-OAEP implementation forked from node-forge so that environments without Web Crypto API support can still import a PEM public key, encrypt data, and run SHA1/256/384/512 hashes with Web Crypto-compatible return types; only RSA-OAEP is retained and coverage is ~100% (`README.md:12-21`).
-- The published entry points are `dist/main.cjs`, `dist/main.mjs`, and `dist/types.d.ts`, all bundled from `src/mod.ts` via Vite and driven by pnpm scripts (`package.json:8-30`).
+- Pure TypeScript RSA-OAEP implementation forked from node-forge so that environments without Web Crypto API support can still import a PEM public key, encrypt data, and run SHA1/256/384/512 hashes with Web Crypto-compatible return types; only RSA-OAEP is retained and coverage is 100%.
+- Zero runtime dependencies — all cryptographic primitives are self-contained under `src/lib/`.
+- The published entry points are `dist/main.cjs`, `dist/main.mjs`, and `dist/types.d.ts`, all bundled from `src/mod.ts` via Vite. The package declares `"sideEffects": false` for tree-shaking.
 
 ## Tooling & prerequisites
-- Use pnpm for all node-based workflows; every package script is defined with pnpm invocations, so install dependencies with pnpm before running them (`package.json:21-30`).
-- Tests and coverage rely on Vitest with v8 coverage provider (`package.json:33-35`).
-- TypeDoc generates HTML documentation, deployed via GitHub Pages (`package.json:36-37`).
+- Use **pnpm** for all workflows.
+- Tests and coverage rely on **Vitest** with v8 coverage provider.
+- TypeDoc generates HTML documentation, deployed via GitHub Pages.
+- **TypeScript must stay on 5.x** — vite-plugin-dts emits empty d.ts files under TypeScript 6.x.
 
 ## Common commands
 | Purpose | Command | Notes |
 | --- | --- | --- |
-| Type check | `pnpm check` | Runs `tsc --noEmit` for the entire TypeScript surface. |
-| Lint | `pnpm lint` | Executes ESLint across the repo. |
-| Clean + verify | `pnpm prebuild` | Runs type-check and lint before bundling. |
-| Build bundles/types | `pnpm build` | Uses Vite to emit CJS, ESM, and d.ts artifacts into `dist/`. |
-| Full test suite + coverage | `pnpm test` | Runs Vitest with v8 coverage. |
-| Watch mode tests | `pnpm test:watch` | Runs Vitest in watch mode. |
-| Test UI | `pnpm test:ui` | Opens Vitest UI for interactive testing. |
-| Generate docs | `pnpm docs` | Cleans `docs/` and runs TypeDoc to generate HTML documentation. |
-| Run a single test file | `pnpm exec vitest run tests/rsa.test.ts` | Can swap in `tests/sha.test.ts` or `tests/coverage.test.ts`. |
+| Type check | `pnpm check` | Runs `tsc --noEmit`. |
+| Lint | `pnpm lint` | ESLint across the repo. |
+| Clean + verify | `pnpm prebuild` | Type-check then lint before bundling. |
+| Build bundles/types | `pnpm build` | Vite emits CJS, ESM, and d.ts into `dist/`. |
+| Full test suite + coverage | `pnpm test` | Vitest with v8 coverage — **must stay at 100%**. |
+| Watch mode tests | `pnpm test:watch` | Vitest in watch mode. |
+| Test UI | `pnpm test:ui` | Vitest UI for interactive testing. |
+| Generate docs | `pnpm docs` | Cleans `docs/` and runs TypeDoc. |
+| Run a single test file | `pnpm exec vitest run tests/rsa.test.ts` | Swap in `tests/sha.test.ts` or `tests/coverage.test.ts`. |
 
 ## Architecture overview
-### Public API surface
-- `src/mod.ts` re-exports the hash creators (`sha1`, `sha256`, `sha384`, `sha512`) and exposes the `RSAPublicKey` interface alongside `importPublicKey`, which wraps the lower-level RSA module into a Web Crypto-style API returning `ArrayBuffer` (`src/mod.ts:1-64`).
-- `src/lib/defines.ts` specifies the `HashAlgorithm` contract consumed by RSA-OAEP encoding and the `HashAlgorithmCreator` factories used throughout the hashing modules (`src/lib/defines.ts:1-55`).
 
-### RSA/OAEP pipeline
-- `src/lib/rsa.ts` handles ASN.1 decoding of `SubjectPublicKeyInfo`, PEM parsing, jsbn big-integer math, and OAEP padding; `publicKeyFromPem` parses the PEM, `publicKeyFromAsn1` validates OIDs, and `setRsaPublicKey().encrypt` feeds data through `encode_rsa_oaep` before raw RSA exponentiation (`src/lib/rsa.ts:69-222`).
-- ASN.1, PEM, PKCS#1, PRNG, AES, and buffer helpers live under `src/lib/` and are the only dependencies required at runtime, preserving the "pure JS" guarantee noted in the README (`README.md:12-21`).
+### Public API surface (`src/mod.ts`)
+- Re-exports hash creators (`sha1`, `sha256`, `sha384`, `sha512`), the `ByteStringBuffer` class, and type exports (`HashAlgorithm`, `HashAlgorithmCreator`).
+- Exposes `importPublicKey(pem) → RSAPublicKey` which wraps the lower-level RSA module into a Web Crypto-style API returning `ArrayBuffer`.
 
-### Hash primitives and utilities
-- The hash creators exported by `src/mod.ts` come from `src/lib/sha1.ts`, `src/lib/sha256.ts`, and `src/lib/sha512.ts`, each producing objects that satisfy the `HashAlgorithm` interface for OAEP usage and standalone digest operations (`src/mod.ts:4-8`, `src/lib/defines.ts:1-55`).
-- `ByteStringBuffer` underpins binary manipulation (used heavily by RSA parsing) and is re-exported for advanced callers who need to interop with the lower-level APIs (`src/mod.ts:4`, `src/lib/ByteStringBuffer.ts`).
+### Encryption pipeline (call chain)
+```
+importPublicKey(pem)
+  → publicKeyFromPem (src/lib/rsa.ts)
+    → pemDecode (src/lib/pem.ts)          — PEM → DER binary string
+    → fromDer (src/lib/asn1.ts)           — DER → ASN.1 tree
+    → publicKeyFromAsn1                    — ASN.1 → BigInteger(n, e)
+  → RSAPublicKey.encrypt(data, hash)
+    → encode_rsa_oaep (src/lib/pkcs1.ts)  — OAEP padding with MGF1
+      → random.generateSync (src/lib/random.ts) — PRNG seed via AES-CTR (src/lib/aes.ts)
+    → rsaEncrypt                           — BigInteger modPow then → ArrayBuffer
+```
+
+### Internal modules (`src/lib/`)
+| File | Role |
+| --- | --- |
+| `rsa.ts` | PEM parsing, ASN.1 OID validation, RSA exponentiation via `BigInteger.modPow` |
+| `pkcs1.ts` | OAEP encode + MGF1 mask generation |
+| `asn1.ts` | DER parser, `SubjectPublicKeyInfo` / `RSAPublicKey` validators |
+| `pem.ts` | PEM envelope decode (regex + base64) |
+| `jsbn.ts` | Big-integer arithmetic: `BigInteger` class + Montgomery reduction for `modPow` |
+| `ByteStringBuffer.ts` | Binary string-backed byte buffer used throughout for I/O |
+| `sha1.ts` / `sha256.ts` / `sha512.ts` | Hash implementations satisfying `HashAlgorithm` interface |
+| `random.ts` | Fortuna-based PRNG using AES-128 CTR from `aes.ts` |
+| `prng.ts` | PRNG context with entropy pool management |
+| `aes.ts` | AES-128 block cipher (key expansion + single-block encrypt) for PRNG |
+| `util.ts` | `xorBytes` and `decode64` helpers |
+| `defines.ts` | `HashAlgorithm` and `HashAlgorithmCreator` interface definitions |
+
+### Tree-shaking conventions
+- `package.json` declares `"sideEffects": false`.
+- Module top-level function calls and `new` expressions must be annotated with `/*#__PURE__*/` to help bundlers eliminate unused code (see `src/lib/random.ts`, `src/lib/jsbn.ts`).
+- Vite build uses `treeshake: { moduleSideEffects: false, propertyReadSideEffects: false }`.
 
 ### Testing strategy
-- `tests/rsa.test.ts` asserts that invalid PEMs throw, then encrypts/decrypts test strings against the Web Crypto API across all supported hashes for 100 iterations to ensure deterministic interoperability (`tests/rsa.test.ts:47-138`).
-- `tests/sha.test.ts` compares each hash implementation's `ArrayBuffer` output against `crypto.subtle.digest` to guarantee byte-for-byte parity with Web Crypto (`tests/sha.test.ts:6-36`).
-- `tests/coverage.test.ts` provides additional edge case tests to achieve ~100% code coverage (`tests/coverage.test.ts`).
-
-### Tooling outputs & docs
-- Build artifacts (`dist/main.cjs`, `dist/main.mjs`, `dist/types.d.ts`) are the only files published alongside the source set defined under `files` in `package.json`, so remember to run `pnpm build` before publishing (`package.json:8-31`).
-- TypeDoc generates HTML documentation, deployed to GitHub Pages at https://jiangjie.github.io/rsa-oaep-encryption/ (`package.json:36-37`, `README.md:271-275`).
+- `tests/rsa.test.ts` — Encrypts test strings with this library, decrypts with Web Crypto API across all 4 hash algorithms for 100 iterations to verify interoperability.
+- `tests/sha.test.ts` — Compares each hash implementation's output byte-for-byte against `crypto.subtle.digest`.
+- `tests/coverage.test.ts` — Edge case tests for internal modules (`ByteStringBuffer`, `BigInteger`, `ASN.1`, `PEM`) to maintain 100% branch coverage.
+- **Coverage must remain at 100%** for statements, functions, and lines. Branch coverage should also be 100%.
