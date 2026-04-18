@@ -22,7 +22,7 @@ class NativeBigInteger implements IBigInteger {
     }
 
     bitLength(): number {
-        if (this.value === 0n) return 0;
+        if (this.value === BigInt(0)) return 0;
         return this.value.toString(2).length;
     }
 
@@ -33,21 +33,21 @@ class NativeBigInteger implements IBigInteger {
     }
 
     toString(): string {
-        if (this.value === 0n) return '';
+        if (this.value === BigInt(0)) return '';
         return this.value.toString(16);
     }
 }
 
 /** Binary square-and-multiply modular exponentiation. */
 function modPowBigInt(base: bigint, exp: bigint, mod: bigint): bigint {
-    if (mod === 1n) return 0n;
-    let result = 1n;
+    if (mod === BigInt(1)) return BigInt(0);
+    let result = BigInt(1);
     base = base % mod;
-    while (exp > 0n) {
-        if (exp & 1n) {
+    while (exp > BigInt(0)) {
+        if (exp & BigInt(1)) {
             result = (result * base) % mod;
         }
-        exp >>= 1n;
+        exp >>= BigInt(1);
         base = (base * base) % mod;
     }
     return result;
@@ -73,7 +73,7 @@ const useNativeBigInt = typeof BigInt === 'function';
  */
 export function createBigInteger(hex: string): IBigInteger {
     if (useNativeBigInt) {
-        const value = hex.length > 0 ? BigInt(`0x${hex}`) : 0n;
+        const value = hex.length > 0 ? BigInt(`0x${hex}`) : BigInt(0);
         return new NativeBigInteger(value);
     }
     return new JsbnBigInteger(hex) as unknown as IBigInteger;
