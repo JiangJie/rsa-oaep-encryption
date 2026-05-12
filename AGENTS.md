@@ -11,7 +11,7 @@ This file provides guidance to AI coding agents when working with code in this r
 - Use **pnpm** for all workflows.
 - Tests and coverage rely on **Vitest** with v8 coverage provider.
 - TypeDoc generates HTML documentation, deployed via GitHub Pages.
-- **TypeScript must stay on 5.x** — vite-plugin-dts emits empty d.ts files under TypeScript 6.x.
+- d.ts bundling uses **`unplugin-dts/vite`** with the `bundleTypes` option (requires `@microsoft/api-extractor` as a peer).
 
 ## Common commands
 | Purpose | Command | Notes |
